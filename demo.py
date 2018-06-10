@@ -77,6 +77,8 @@ def parse_args():
     parser.add_argument('--stride', dest='stride', help='stride of sliding window',
                         default=2, type=int)
     parser.add_argument('--sw', dest='slide_window', help='use sliding window in pnet', action='store_true')
+    parser.add_argument('--cpu', dest='cpu', help='GPU device to train with',
+                        default=1, type=int)
     parser.add_argument('--gpu', dest='gpu_id', help='GPU device to train with',
                         default=0, type=int)
     args = parser.parse_args()
@@ -86,7 +88,13 @@ if __name__ == '__main__':
     args = parse_args()
     print 'Called with argument:'
     print args
-    ctx = mx.gpu(args.gpu_id)
+    print("args.cpu=",args.cpu)
+    print("args.gpu_id=",args.gpu_id)
+
+    if args.cpu == 1:
+        ctx = mx.cpu()
+    else:
+        ctx = mx.gpu(args.gpu_id)
     if args.gpu_id == -1:
         ctx = mx.cpu(0)
     test_net(args.prefix, args.epoch, args.batch_size,
